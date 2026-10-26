@@ -36,33 +36,33 @@ if "%~1"=="" goto done
 if /I "%~1"=="--profile" exit /b 41
 if /I "%~1"=="--user-data-dir" (
   set "UD=%~2"
-  shift
-  shift
+  shift /1
+  shift /1
   goto next
 )
 if /I "%~1"=="--extensions-dir" (
   set "ED=%~2"
-  shift
-  shift
+  shift /1
+  shift /1
   goto next
 )
 if /I "%~1"=="--install-extension" (
   if "%~2"=="" exit /b 42
   echo %~2>>"%~dp0pending.txt"
-  shift
-  shift
+  shift /1
+  shift /1
   goto next
 )
 if /I "%~1"=="--list-extensions" (
-  shift
+  shift /1
   goto next
 )
 if /I "%~1"=="--new-window" (
-  shift
+  shift /1
   goto next
 )
 set "FO=%~1"
-shift
+shift /1
 goto next
 :done
 if "%UD%"=="" exit /b 43
@@ -171,7 +171,7 @@ exit /b 0
             throw 'Node suppression leaked into opened VS Code windows.'
         }
     }
-    Write-Host 'Isolated PDF mode tests passed (isolation, switch, clean CLI warnings, conflict rejection).' 
+    Write-Host 'Isolated PDF mode tests passed (isolation, switch, clean CLI warnings, conflict rejection).'
     exit 0
 } catch {
     Write-Error ('PDF mode test failed: ' + $_.Exception.Message) -ErrorAction Continue
