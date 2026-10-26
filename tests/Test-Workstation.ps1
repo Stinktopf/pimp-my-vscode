@@ -43,8 +43,8 @@ if /I not "%~1"=="--install-extension" exit /b 7
 if "%~2"=="" exit /b 7
 echo %~2>>"%~dp0installed.txt"
 echo %~2>>"%~dp0install.log"
-shift
-shift
+shift /1
+shift /1
 goto add
 '@ | Set-Content -LiteralPath $cli -Encoding Ascii
     $originalNodeOptionsExists = Test-Path -LiteralPath 'Env:NODE_OPTIONS'
@@ -127,7 +127,7 @@ goto add
         $env:NODE_OPTIONS -cne '--trace-warnings') {
         throw 'Targeted CLI warning suppression or restoration failed.'
     }
-    Write-Host 'Workstation mock-CLI tests passed (batch install, clean deprecation flag, idempotence, capture/restore, opt-in PDF removal).'  
+    Write-Host 'Workstation mock-CLI tests passed (batch install, clean deprecation flag, idempotence, capture/restore, opt-in PDF removal).'
     exit 0
 } catch {
     Write-Error ("Workstation test failed: " + $_.Exception.Message) -ErrorAction Continue
