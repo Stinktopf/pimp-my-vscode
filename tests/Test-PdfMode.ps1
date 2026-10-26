@@ -110,13 +110,24 @@ exit /b 0
     # pointing at a user-local wrapper, never the setup repository.
     $settingsPath = Join-Path $state 'latex\user-data\User\settings.json'
     $settings = Get-Content -LiteralPath $settingsPath -Raw | ConvertFrom-Json
-    $wrapper = @($settings.'latex-workshop.latex.tools')[0].args[5]
-    if (-not [IO.Path]::IsPathRooted($wrapper) -or
-        $wrapper -notlike (Join-Path $state 'latex-runtime*') -or
-        -not (Test-Path -LiteralPath $wrapper -PathType Leaf) -or
-        $wrapper -match 'WORKSPACE_FOLDER' -or
-        $settings.'latex-workshop.latex.autoBuild.run' -cne 'onSave') {
-        throw 'Global LaTeX settings do not point at an installed runtime.'
+    $wrapper = [string]@($settings.'latex-workshop.latex.tools')[0].args[5]
+    $expectedWrapper = Join-Path $state 'latex-runtime\scripts\tectonic-build.ps1'
+    if (-not [IO.Path]::IsPathRooted($wrapper)) {
+        throw "LaTeX build wrapper path is not absolute: $wrapper"
+    }
+    if (-not [string]::Equals([IO.Path]::GetFullPath($wrapper),
+            [IO.Path]::GetFullPath($expectedWrapper),
+            [StringComparison]::OrdinalIgnoreCase)) {
+        throw "LaTeX build wrapper path mismatch. Expected: $expectedWrapper; got: $wrapper"
+    }
+    if (-not (Test-Path -LiteralPath $wrapper -PathType Leaf)) {
+        throw "Installed LaTeX build wrapper was not found: $wrapper"
+    }
+    if ($wrapper -match 'WORKSPACE_FOLDER') {
+        throw 'LaTeX build wrapper must not refer to the workspace.'
+    }
+    if ($settings.'latex-workshop.latex.autoBuild.run' -cne 'onSave') {
+        throw 'LaTeX Workshop auto-build setting is not onSave.'
     }
     foreach ($relative in @('scripts\Tectonic.Core.ps1', 'config\tectonic-release.json')) {
         if (-not (Test-Path -LiteralPath (Join-Path $state ('latex-runtime\' + $relative)) -PathType Leaf)) {
