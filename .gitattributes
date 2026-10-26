@@ -1,0 +1,15 @@
+# Consistent source file line endings across Windows, Linux, and CI.
+* text=auto eol=lf
+
+# Windows command scripts use CRLF.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Do not normalize binary files.
+*.zip binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.exe binary
