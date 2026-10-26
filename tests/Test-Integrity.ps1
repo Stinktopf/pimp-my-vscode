@@ -14,6 +14,7 @@ try {
     New-Item -ItemType Directory -Path $isolated -Force | Out-Null
     $env:LOCALAPPDATA = $isolated
     $badZip = Join-Path $stage 'wrong checksum.zip'
+    Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [IO.Compression.ZipFile]::Open($badZip, [IO.Compression.ZipArchiveMode]::Create)
     try {
