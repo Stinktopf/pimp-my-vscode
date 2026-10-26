@@ -1,0 +1,22 @@
+{
+  "schema": 2,
+  "extensions": [
+    "James-Yu.latex-workshop",
+    "EditorConfig.EditorConfig",
+    "streetsidesoftware.code-spell-checker",
+    "DavidAnson.vscode-markdownlint",
+    "redhat.vscode-yaml",
+    "ms-vscode.powershell",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "tamasfe.even-better-toml",
+    "yzhang.markdown-all-in-one",
+    "ms-python.python",
+    "sonarsource.sonarlint-vscode",
+    "marp-team.marp-vscode"
+  ],
+  "conflicts": [
+    "tomoki1207.pdf"
+  ]
+}

@@ -1,0 +1,62 @@
+name: "pimp-my-vscode | Windows smoke tests"
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 25
+    steps:
+      - name: Checkout into a path with spaces
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: "pimp my vscode"
+          persist-credentials: false
+      - name: Validate sources and reject tampered archives
+        shell: powershell
+        working-directory: "pimp my vscode"
+        run: |
+          .\tests\Test-Project.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-Hash.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-Integrity.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-VSCode.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-Workstation.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-GlobalLaTeX.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-PdfMode.ps1
+          exit $LASTEXITCODE
+      - name: Exercise restricted-policy start without changing saved settings
+        shell: powershell
+        working-directory: "pimp my vscode"
+        run: |
+          .\tests\Test-Policy.ps1
+          exit $LASTEXITCODE
+      - name: Install and compile test document
+        shell: powershell
+        working-directory: "pimp my vscode"
+        run: .\setup.ps1 -Install -Test
+      - name: Offline builds, path handling, tamper detection and repair
+        shell: powershell
+        working-directory: "pimp my vscode"
+        run: |
+          .\tests\Invoke-SmokeTest.ps1 -Offline
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-Paths.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-Trust.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\tests\Test-GlobalLaTeX.ps1 -Build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\setup.ps1 -Check
+          exit $LASTEXITCODE

@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Tectonic: Build example",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/tectonic-build.ps1",
+        "-Document",
+        "${workspaceFolder}/examples/main.tex",
+        "-OutDir",
+        "${workspaceFolder}/examples/build"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Tectonic: Smoke test",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tests/Invoke-SmokeTest.ps1"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
